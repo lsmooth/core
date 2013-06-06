@@ -281,6 +281,7 @@ class OC_DB {
 						'hostspec' => $host,
 						'charset' => 'AL32UTF8',
 					);
+					//FIXME use 'quote_identifier', true: http://pear.php.net/manual/en/package.database.mdb2.intro-quote.php
 					break;
 				case 'mssql':
 					$dsn = array(
@@ -569,16 +570,12 @@ class OC_DB {
 		
 		self::raiseExceptionOnError($definition,'Failed to parse the database definition');
 
-		// Die in case something went wrong
-		if( $definition instanceof MDB2_Schema_Error ) {
-			OC_Template::printErrorPage( $definition->getMessage().': '.$definition->getUserInfo() );
-		}
 		if(OC_Config::getValue('dbtype', 'sqlite')==='oci') {
 			unset($definition['charset']); //or MDB2 tries SHUTDOWN IMMEDIATE
 			$oldname = $definition['name'];
 			$definition['name']=OC_Config::getValue( "dbuser", $oldname );
 		}
-
+		
 		// we should never drop a database
 		$definition['overwrite'] = false;
 
@@ -599,6 +596,11 @@ class OC_DB {
 		$CONFIG_DBTYPE = OC_Config::getValue( "dbtype", "sqlite" );
 
 		self::connectScheme();
+		
+		if(OC_Config::getValue('dbtype', 'sqlite')==='oci') {
+			//set dbname, it is unset because oci uses 'service' to connect
+			self::$schema->db->database_name=self::$schema->db->dsn['username'];
+		}
 
 		// read file
 		$content = file_get_contents( $file );
@@ -621,6 +623,13 @@ class OC_DB {
 		if( $CONFIG_DBTYPE == 'pgsql' ) { //mysql support it too but sqlite doesn't
 			$content = str_replace( '<default>0000-00-00 00:00:00</default>',
 				'<default>CURRENT_TIMESTAMP</default>', $content );
+		}
+		if(OC_Config::getValue('dbtype', 'sqlite')==='oci') {
+			unset($previousSchema['charset']); //or MDB2 tries SHUTDOWN IMMEDIATE
+			$oldname = $previousSchema['name'];
+			$previousSchema['name']=OC_Config::getValue( "dbuser", $oldname );
+			//check identifiers are at most 30 chars long
+			
 		}
 		file_put_contents( $file2, $content );
 		$op = self::$schema->updateDatabase($file2, $previousSchema, array(), false);
@@ -922,7 +931,7 @@ class OC_DB {
 		}
 	}
 	/**
-	 * check if a result is an error, writes a log entry and throws an exception, works with MDB2 and PDOException
+	 * check if a result is an error and throws an exception, works with MDB2 and PDOException
 	 * @param mixed $result
 	 * @param string message
 	 * @return void
