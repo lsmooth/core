@@ -944,7 +944,7 @@ class OC_DB {
 			} else {
 				$message .= ', Root cause:' . self::getErrorMessage($result);
 			}
-			throw new DatabaseException($message, getErrorCode($result));
+			throw new DatabaseException($message, self::getErrorCode($result));
 		}
 	}
 
