@@ -340,14 +340,19 @@ OC.Notification={
 		});
 	},
 	showHtml: function(html) {
-		this.show(html);
+		if(($('#notification').filter('span.undo').length == 1) || OC.Notification.isHidden()){
+			$('#notification').html(html);
+			$('#notification').fadeIn().css("display","inline");
+		}else{
+			OC.Notification.queuedNotifications.push(html);
+		}
 	},
 	show: function(text) {
 		if(($('#notification').filter('span.undo').length == 1) || OC.Notification.isHidden()){
-			$('#notification').html(text);
+			$('#notification').text(text);
 			$('#notification').fadeIn().css("display","inline");
 		}else{
-			OC.Notification.queuedNotifications.push(text);
+			OC.Notification.queuedNotifications.push($('<div/>').text(text).html());
 		}
 	},
 	isHidden: function() {
