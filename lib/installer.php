@@ -68,7 +68,8 @@ class OC_Installer{
 				OC_Log::write('core', 'No href specified when installing app from http', OC_Log::ERROR);
 				return false;
 			}
-			copy($data['href'], $path);
+			$app_data = OC_Util::getUrlContent($data['href']);
+			file_put_contents($path, $app_data);
 		}else{
 			if(!isset($data['path'])) {
 				OC_Log::write('core', 'No path specified when installing app from local file', OC_Log::ERROR);
