@@ -810,7 +810,7 @@ class OC_Util {
 			if(OC_Config::getValue('proxyuserpwd', '')<>'') {
 				curl_setopt($curl, CURLOPT_PROXYUSERPWD, OC_Config::getValue('proxyuserpwd'));
 			}
-			$data = curl_exec_follow($curl, 10);
+			$data = OC_Util::curl_exec_follow($curl, 10);
 			curl_close($curl);
 
 		} else {
