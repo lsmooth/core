@@ -6,6 +6,12 @@
  */
 \OCP\Util::addScript('3rdParty/angular/angular-js','angular');
 \OCP\Util::addStyle( 'settings', 'settings' );
+\OCP\Util::addScript( 'settings', 'users' );
+\OCP\Util::addScript( 'core', 'multiselect' );
+\OCP\Util::addScript( 'core', 'singleselect' );
+\OCP\Util::addScript('core', 'jquery.inview');
+\OCP\Util::addStyle( 'settings', 'settings' );
+//OC_App::setActiveNavigationEntry( 'core_users' );
 
 ?>
 <div id="user-settings" ng-app="users" ng-cloak>

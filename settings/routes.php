@@ -14,7 +14,7 @@ $this->create('settings_personal', '/settings/personal')
 $this->create('settings_settings', '/settings')
 	->actionInclude('settings/settings.php');
 $this->create('settings_users', '/settings/users')
-	->actionInclude('settings/users.php');
+	->actionInclude('settings/controller/users/pagecontroller.php');
 $this->create('settings_apps', '/settings/apps')
 	->actionInclude('settings/apps.php');
 $this->create('settings_admin', '/settings/admin')
