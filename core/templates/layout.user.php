@@ -6,8 +6,11 @@
 <!--[if gt IE 9]><html class="ng-csp ie"><![endif]-->
 <!--[if !IE]><!--><html class="ng-csp"><!--<![endif]-->
 	<head data-user="<?php p($_['user_uid']); ?>" data-requesttoken="<?php p($_['requesttoken']); ?>">
-		<title><?php p(!empty($_['application'])?$_['application'].' | ':'') ?>ownCloud
-			<?php p(trim($_['user_displayname']) != '' ?' ('.$_['user_displayname'].') ':'') ?></title>
+		<title>
+			<?php p(!empty($_['application'])?$_['application'].' | ':'');
+			p(OC_Defaults::getName());
+			p(trim($_['user_displayname']) != '' ?' ('.$_['user_displayname'].') ':'') ?>
+		</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="apple-itunes-app" content="app-id=543672169">
 		<link rel="shortcut icon" href="<?php print_unescaped(image_path('', 'favicon.png')); ?>" />
@@ -36,7 +39,9 @@
 	<header><div id="header">
 			<a href="<?php print_unescaped(link_to('', 'index.php')); ?>" title="" id="owncloud"><img class="svg"
 				src="<?php print_unescaped(image_path('', 'logo-wide.svg')); ?>" alt="ownCloud" /></a>
-
+			<?php if (OC_Util::getEditionString() !== ''): ?>
+			<div id="logo-claim">Enterprise Edition</div>
+			<?php endif; ?>
 			<ul id="settings" class="svg">
 				<span id="expand">
 					<span id="expandDisplayName"><?php  p(trim($_['user_displayname']) != '' ? $_['user_displayname'] : $_['user_uid']) ?></span>

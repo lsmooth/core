@@ -172,7 +172,8 @@ class OC_Util {
 		//check for database drivers
 		if(!(is_callable('sqlite_open') or class_exists('SQLite3'))
 			and !is_callable('mysql_connect')
-			and !is_callable('pg_connect')) {
+			and !is_callable('pg_connect')
+			and !is_callable('oci_connect')) {
 			$errors[]=array('error'=>'No database drivers (sqlite, mysql, or postgresql) installed.',
 				'hint'=>'');//TODO: sane hint
 			$web_server_restart= true;
@@ -868,5 +869,24 @@ class OC_Util {
 		return $theme;
 	}
 
+	/**
+	 * Clear the opcode cache if one exists
+	 * This is necessary for writing to the config file
+	 * in case the opcode cache doesn't revalidate files
+	 */
+	public static function clearOpcodeCache() {
+		// APC
+		if (function_exists('apc_clear_cache')) {
+			apc_clear_cache();
+		}
+		// Zend Opcache
+		if (function_exists('accelerator_reset')) {
+			accelerator_reset();
+		}
+		// XCache
+		if (function_exists('xcache_clear_cache')) {
+			xcache_clear_cache(XC_TYPE_VAR, 0);
+		}
+	}
 
 }
